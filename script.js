@@ -13,11 +13,11 @@ var dy = [];
 var colors = [];
 class Color {
     static colors = [
-        "#ff0000",
-        "#00ff00",
-        "#0000ff",
-        "#FF69B4",
-        "#ab00ba"
+        "#fff",
+        "#ccc",
+        "#aaa",
+        "#999",
+        "#111"
     ];
 
     static Random() {
@@ -26,24 +26,28 @@ class Color {
 }
 
 function directionFromAngle(degree) {
-    let radians = degree * (Math.PI / 180);
-    return {x: Math.cos(radians) * randomFloat(0, 4), y: Math.sin(radians) * randomFloat(0, 4)};
+    let radians = degree * (Math.PI /180);
+    return {x: Math.cos(radians), y: Math.sin(radians)};
 }
 
 function draw()
 {   
-    ctx.globalCompositeOperation = 'screen';
-    ctx.clearRect(0,0,canvas.width, canvas.height);
+    ctx.beginPath();
+    ctx.fillStyle = "rgba(51, 51, 51, 0.7)";
+    ctx.rect(0, 0, canvas.width, canvas.height);
+    ctx.fill();
+    ctx.closePath();
+    //ctx.clearRect(0,0,canvas.width, canvas.height);
     for (let i = 0; i < clickX.length; i++) {
         ctx.beginPath();
-        ctx.arc(clickX[i], clickY[i], 1, 0, Math.PI*2);
+        ctx.arc(clickX[i], clickY[i], 1.2137, 0, Math.PI*2);
         ctx.fillStyle = colors[i];
         ctx.fill();
         ctx.closePath();
         clickX[i] += dx[i];
         clickY[i] += dy[i];
         lifetime[i]++;
-        if(lifetime[i] >= 2500){
+        if(lifetime[i] >= randomFloat(120,824)){
             delete clickX[i];
             delete clickY[i];
             delete lifetime[i];
@@ -53,7 +57,7 @@ function draw()
         }
     }
 }
-setInterval(draw, 20);
+setInterval(draw, 1000/60);
 document.onmousemove = function(e)
 {
     cursorX = e.pageX;
@@ -69,15 +73,16 @@ function randomFloat(min, max) {
   }
 
 document.addEventListener("click", (e) =>{
-    for(i = 0; i < 500; i++)
+    for(i = 0; i < 420; i++)
     {
     clickX.push(e.clientX);
     clickY.push(e.clientY);
     lifetime.push(0);
-    let {x,y} = directionFromAngle(randomFloat(0,360));
-    dx.push(x);
-    dy.push(y);
+    let {x,y} = directionFromAngle(randomNumber(0,360));
+    dx.push(x * randomFloat(0.1,2));
+    dy.push(y * randomFloat(0.1,2));
     colors.push(Color.Random());
+    // colors.push('#'+randomNumber(16,255).toString(16)+randomNumber(16,255).toString(16)+randomNumber(16,255).toString(16));
     }
 })
 
@@ -88,16 +93,3 @@ function resizeCanvas() {
 
 resizeCanvas();
 window.addEventListener('resize', resizeCanvas);
-
-for(i = 0; i<2; i++)
-{
-    for(i = 0; i < 500; i++)
-    {
-        clickX.push(500 + i);
-        clickY.push(500 + i);
-        let {x,y} = directionFromAngle(randomFloat(0,360));
-        dx.push(x);
-        dy.push(y);
-        colors.push(Color.Random());
-    }
-}
